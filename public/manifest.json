@@ -1,0 +1,20 @@
+{
+  "name": "QuakeWatch Pro - Real-time Earthquake Monitoring",
+  "short_name": "QuakeWatch Pro",
+  "description": "Advanced real-time earthquake monitoring system with interactive maps and alerts",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["utilities", "education", "news"],
+  "lang": "en",
+  "dir": "ltr"
+}
