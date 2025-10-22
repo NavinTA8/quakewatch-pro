@@ -49,6 +49,23 @@ Uses **Zustand** for centralized state management:
 ### Alert System
 Alert notifications use **earthquake ID tracking** (not array length) to prevent false alerts during filtering operations. Alerts only trigger for genuinely new earthquake data from the real-time feed.
 
+### Early Warning System (Thailand-focused)
+Advanced seismic early warning system using **P-wave and S-wave physics calculations**:
+
+- **useEarlyWarning** hook - Processes earthquakes for threat assessment
+- **Regional threat zones** - Monitors 5 major fault systems:
+  - Myanmar-Thailand Border (M5.0+, 800km range)
+  - Sumatra-Andaman Fault Zone (M6.5+, 1000km range)
+  - Philippines Fault System (M7.0+, 1200km range)
+  - Java-Bali Fault Zone (M6.0+, 800km range)
+  - Sagaing Fault (M5.5+, 600km range)
+- **Wave arrival calculations** - P-wave (6.0 km/s) and S-wave (3.5 km/s) timing
+- **Threat levels** - LOW, MODERATE, HIGH, CRITICAL based on magnitude + distance
+- **Thailand locations** - Monitors 10 major cities including Bangkok, Chiang Mai, Phuket
+- **Warning validation** - Minimum 10s warning time, magnitude-based max distance
+- **Browser notifications** - Enhanced alerts with threat-level specific messaging
+- **Auto-cleanup** - Warnings expire after S-wave arrival + 60s
+
 ### WebSocket Real-time System
 - **Client**: `useWebSocket` hook with exponential backoff retry logic
 - **Server**: Auto-started WebSocket server on port 8080 (with port conflict resolution)
@@ -64,6 +81,10 @@ Uses **React Leaflet** with **dynamic imports** to avoid SSR issues. Map compone
 - **EarthquakeList** - Scrollable list with earthquake details
 - **EarthquakeFilters** - Filter controls (magnitude, location, time, alerts)
 - **AlertSystem** - Notification system with browser notifications and sound
+- **EmergencyAlertOverlay** - Full-screen emergency alerts for critical threats
+- **ThailandLocationSelector** - User location selection for early warning
+- **SafetyInstructions** - Emergency response guidance
+- **EarlyWarningTest** - Early warning system testing interface
 
 ### Critical Implementation Details
 - **WebSocket startup**: Use `node server.js` for development to ensure WebSocket server starts
@@ -71,19 +92,31 @@ Uses **React Leaflet** with **dynamic imports** to avoid SSR issues. Map compone
 - **Alert logic**: Uses `earthquake.id` tracking to prevent filter-triggered false alerts
 - **SSR compatibility**: Maps use dynamic imports with `{ ssr: false }`
 - **Error handling**: Comprehensive error boundaries and fallback states
+- **Early warning calculations**: Based on real seismic physics (P-wave and S-wave speeds)
+- **Regional threat detection**: Earthquakes automatically categorized by fault zone
+- **Warning time validation**: Minimum 10s warning time required for alerts
+- **User location**: Required for early warning system to calculate arrival times
 
 ### File Structure
 ```
 src/
 ├── app/                 # Next.js App Router
+│   └── api/            # API routes (health, websocket)
 ├── components/          # React components
 │   ├── ui/             # Shadcn/UI base components
-│   └── *.tsx           # Feature components
-├── hooks/              # Custom hooks (useWebSocket)
+│   └── *.tsx           # Feature components (Dashboard, Map, Filters, etc.)
+├── hooks/              # Custom hooks
+│   ├── use-websocket.ts      # WebSocket client with retry logic
+│   └── use-early-warning.ts  # Early warning system hook
 ├── lib/                # Utilities and API clients
+│   ├── usgs-api.ts           # USGS API client
+│   ├── early-warning.ts      # Seismic wave calculations
+│   └── websocket-server.ts   # WebSocket server implementation
 ├── stores/             # Zustand state stores
+│   └── earthquake-store.ts   # Main store with auto-refresh
 └── types/              # TypeScript type definitions
-server.js               # Custom server with WebSocket
+    └── earthquake.ts         # Earthquake data types
+server.js               # Custom server with WebSocket auto-startup
 websocket-server-cjs.js # WebSocket server CommonJS wrapper
 ```
 
